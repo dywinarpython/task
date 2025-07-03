@@ -1,0 +1,11 @@
+package org.project.task.dto;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+public record CreateTaskDto(@NotNull(message = "Поле name не может быть null") @Size(max = 50, min = 3, message = "Длины поле name от 3 до 50") String name,
+                            @Size(max = 10_000, min = 3,  message = "Длины поле description от 3 до 10_000") @NotNull(message = "Поле description не может быть null") String description,
+                            @NotNull(message = "Поле deadLine не может быть null") Long deadLine,
+                            @NotNull(message = "Поле status не может быть null") @Size(min = 3, max = 20,  message = "Длины status name от 3 до 20") String status,
+                            @NotNull(message = "Поле zoneID не может быть null") String zoneID) {
+}

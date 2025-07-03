@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+    <changeSet id="2025-16-06-001-create-init-schema.xml" author="Dywinar">
+    <createTable tableName="task">
+        <column name="name" type="varchar(50)"/>
+        <column name="id" type="bigint" autoIncrement="true"><constraints primaryKey="true"/></column>
+        <column name="description" type="varchar(10000)"/>
+        <column name="create_time" type="timestamp(6)"/>
+        <column name="dead_line" type="timestamp(6)"/>
+        <column name="status" type="varchar(20)"/>
+    </createTable>
+    </changeSet>
+</databaseChangeLog>
