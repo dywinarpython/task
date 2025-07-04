@@ -12,6 +12,24 @@ spring:
     url: ${SPRING_DATASOURCE_URL_REACTIVE:r2dbc:postgresql://localhost:5432/taskDb}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:123456}
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}}
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - profile
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/task
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/task
+
 server:
   port: 9090
 logging:

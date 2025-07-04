@@ -10,5 +10,38 @@ services:
       - "5432:5432"
     volumes:
       - db:/var/lib/postgresql/data
+  dbSecurity:
+    image: postgres:17.5
+    container_name: dbSecurity
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - dbSecurity:/var/lib/postgresql/data
+    networks:
+      keycloak_net:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL_HOST: dbSecurity
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_HOSTNAME: localhost
+    command: start-dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - dbSecurity
+    restart: unless-stopped
+    networks:
+      keycloak_net:
 volumes:
   db:
+  dbSecurity:
+networks:
+  keycloak_net:

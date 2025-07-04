@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import org.project.task.config.TestSecurityConfig;
 import org.project.task.dto.CreateTaskDto;
 import org.project.task.dto.SetTaskDto;
 import org.project.task.dto.TaskDto;
@@ -14,6 +15,7 @@ import org.project.task.repository.TaskReposiroty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
@@ -27,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureWebTestClient
+@Import(TestSecurityConfig.class)
 class TaskApplicationTests {
 
     @Autowired

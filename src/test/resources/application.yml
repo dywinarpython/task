@@ -2,3 +2,20 @@ spring:
   liquibase:
     change-log: classpath:db/changelog-master.xml
     enabled: true
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - profile
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/task
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/task
