@@ -1,6 +1,7 @@
 package org.project.task.entity;
 
 
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

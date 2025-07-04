@@ -3,7 +3,7 @@ services:
     image: postgres:17.5
     container_name: db
     environment:
-      POSTGRES_DB: SaveApi
+      POSTGRES_DB: taskDb
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:

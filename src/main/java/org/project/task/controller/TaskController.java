@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/ap1/v1/task")
+@RequestMapping("/api/v1/task")
 @RequiredArgsConstructor
 @Tag(name =" Управление задачами")
 public class TaskController {
@@ -60,7 +60,7 @@ public class TaskController {
             responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Map.class)))
     )
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Map<String, String>>> deleteTask(@RequestParam Long id){
+    public Mono<ResponseEntity<Map<String, String>>> deleteTask(@PathVariable Long id){
         return taskService.delTask(id)
                 .thenReturn(ResponseEntity.status(200).body(Map.of("message", "Задача удалена")));
     }
