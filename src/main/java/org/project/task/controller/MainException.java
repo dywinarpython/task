@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import reactor.core.publisher.Mono;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -40,11 +41,14 @@ public class MainException {
         log.warn(e.getMessage());
         return Mono.just(ResponseEntity.status(404).body(Map.of("warn", e.getMessage())));
     }
-
+    @ExceptionHandler(AuthenticationException.class)
+    public Mono<ResponseEntity<Map<String, String>>> handler(AuthenticationException e){
+        log.error(e.getMessage());
+        return Mono.just(ResponseEntity.status(403).body(Map.of("error", e.getMessage())));
+    }
     @ExceptionHandler(Exception.class)
     public Mono<ResponseEntity<Map<String, String>>> handler(Exception e){
         log.error("Возникла ошибка, а именно: {}", e.getMessage());
         return Mono.just(ResponseEntity.status(500).body(Map.of("error", e.getMessage())));
     }
-
 }

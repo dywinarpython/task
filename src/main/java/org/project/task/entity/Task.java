@@ -1,7 +1,6 @@
 package org.project.task.entity;
 
 
-import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,7 @@ import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Table(name = "task")
 @Getter
@@ -27,5 +27,9 @@ public class Task {
 
     private LocalDateTime deadLine;
 
+    private LocalDateTime updateTime;
+
     private String status;
+
+    private UUID userId;
 }

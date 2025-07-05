@@ -1,7 +1,6 @@
-package org.project.task.dto;
+package org.project.task.dto.response;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+
 
 import java.time.LocalDateTime;
 
@@ -11,5 +10,6 @@ public record TaskDto(
         String description,
         LocalDateTime deadLine,
         LocalDateTime createTime,
+        LocalDateTime updateTime,
         String status) {
 }
