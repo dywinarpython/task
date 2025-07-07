@@ -6,7 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
     <changeSet id="2025-05-07-002-add-user.xml" author="Dywinar">
     <addColumn tableName="task">
-        <column name = "user_id" type="uuid">
+        <column name="group_id" type="bigint">
             <constraints nullable="false"/>
         </column>
     </addColumn>

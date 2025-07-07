@@ -1,4 +1,4 @@
-package org.project.task.dto.request;
+package org.project.task.dto.request.task;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

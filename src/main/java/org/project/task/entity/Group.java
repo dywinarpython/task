@@ -1,19 +1,18 @@
 package org.project.task.entity;
 
-
-import org.springframework.data.annotation.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Table(name = "task")
+@Table(name = "\"group\"")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Task {
+public class Group {
 
     @Id
     private Long id;
@@ -22,13 +21,6 @@ public class Task {
 
     private String description;
 
-    private LocalDateTime createTime;
+    private UUID userID;
 
-    private LocalDateTime deadLine;
-
-    private LocalDateTime updateTime;
-
-    private String status;
-
-    private Long groupId;
 }

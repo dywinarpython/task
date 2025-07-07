@@ -1,8 +1,8 @@
 package org.project.task.service;
 
-import org.project.task.dto.request.CreateTaskDto;
-import org.project.task.dto.request.SetTaskDto;
-import org.project.task.dto.response.TaskDto;
+import org.project.task.dto.request.task.CreateTaskDto;
+import org.project.task.dto.request.task.SetTaskDto;
+import org.project.task.dto.response.task.TaskDto;
 import org.springframework.security.oauth2.jwt.Jwt;
 import reactor.core.publisher.Mono;
 
@@ -13,5 +13,5 @@ public interface TaskService{
     Mono<Void> saveTask(Mono<CreateTaskDto> createTaskDto, Jwt jwt);
     Mono<Map<String, List<String>>> setTask(Mono<SetTaskDto> setTaskDtoMono, Jwt jwt);
     Mono<Void> delTask(Long id, Jwt jwt);
-    Mono<List<TaskDto>> getTask(String timeZone, Jwt jwt);
+    Mono<List<TaskDto>> getTasks(String timeZone, Jwt jwt, Long groupId);
 }

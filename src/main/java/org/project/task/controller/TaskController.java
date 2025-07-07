@@ -8,10 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.project.task.dto.request.CreateTaskDto;
-import org.project.task.dto.request.SetTaskDto;
-import org.project.task.dto.response.ListTaskDto;
-import org.project.task.dto.response.TaskDto;
+import org.project.task.dto.request.task.CreateTaskDto;
+import org.project.task.dto.request.task.SetTaskDto;
+import org.project.task.dto.response.task.ListTaskDto;
+import org.project.task.dto.response.task.TaskDto;
 import org.project.task.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,9 +30,6 @@ public class TaskController {
     private final TaskService taskService;
 
 
-
-
-
     @Operation(
             summary = "Создания задачи",
             responses = @ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = Map.class)))
@@ -43,8 +40,6 @@ public class TaskController {
         return taskService.saveTask(createTaskDto, jwt)
                 .thenReturn(ResponseEntity.status(201).body(Map.of("message", "Задача сохранена")));
     }
-
-
 
 
     @Operation(
@@ -73,8 +68,8 @@ public class TaskController {
             summary = "Получение задач созданных пользователем",
             responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = ListTaskDto.class)))
     )
-    @GetMapping
-    public Mono<ResponseEntity<Map<String, List<TaskDto>>>> deleteTask(@RequestParam String timeZone, @AuthenticationPrincipal Jwt jwt){
-        return taskService.getTask(timeZone, jwt).map(tasks -> ResponseEntity.ok(Map.of("tasks", tasks)));
+    @GetMapping("/{id}/")
+    public Mono<ResponseEntity<Map<String, List<TaskDto>>>> getTasks(@PathVariable(value = "id") Long groupId, @RequestParam String timeZone, @AuthenticationPrincipal Jwt jwt){
+        return taskService.getTasks(timeZone, jwt, groupId).map(tasks -> ResponseEntity.ok(Map.of("tasks", tasks)));
     }
 }

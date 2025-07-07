@@ -1,4 +1,4 @@
-package org.project.task.dto.response;
+package org.project.task.dto.response.task;
 
 import java.util.List;
 
