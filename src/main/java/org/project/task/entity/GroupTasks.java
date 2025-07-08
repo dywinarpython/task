@@ -1,23 +1,27 @@
 package org.project.task.entity;
 
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table(name = "user_group")
+@Table(name = "group_tasks")
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserGroup {
+@Builder
+@AllArgsConstructor
+public class GroupTasks {
 
     @Id
     private Long id;
 
-    private UUID userId;
+    private Long groupId;
 
-    private Group group;
+    private Long taskID;
+
+    private UUID userID;
+
+
 }

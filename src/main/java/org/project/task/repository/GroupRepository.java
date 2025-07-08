@@ -8,10 +8,11 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-public interface GroupRepository extends ReactiveCrudRepository<Group, Long> {
+public interface GroupRepository extends ReactiveCrudRepository<Group, Long>, RepositoryUpdateFields {
 
 
     Flux<GroupDto> findByUserID(UUID userID);
+
 
 
     Mono<Boolean> existsByIdAndUserID(Long id, UUID userID);

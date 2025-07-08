@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.project.task.dto.request.group.CreateGroupDto;
 import org.project.task.dto.request.group.SetGroupDto;
 import org.project.task.dto.response.group.GroupDto;
+import org.project.task.entity.Group;
 import org.project.task.mapper.group.MapperGroup;
 import org.project.task.repository.GroupRepository;
 import org.project.task.service.GroupService;
@@ -29,8 +30,12 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Mono<Map<String, List<String>>> setTask(Mono<SetGroupDto> setGroupDtoMono, Jwt jwt) {
-        return setGroupDtoMono.flatMap(setGroupDto -> verifyUserAccess(setGroupDto.id(), jwt).then(updateTaskFields(setGroupDto)));
+    public Mono<Void> setTask(Mono<SetGroupDto> setGroupDtoMono, Jwt jwt) {
+        return setGroupDtoMono
+                .flatMap(setGroupDto ->
+                        verifyUserAccess(setGroupDto.id(), jwt).thenReturn(mapperGroup.createUpdateGroupFields(setGroupDto))
+                                .flatMap(sqlIdentifierObjectMap -> groupRepository.updateFields(sqlIdentifierObjectMap, Group.class, "id", setGroupDto.id()))
+                );
     }
 
     @Override
@@ -42,6 +47,8 @@ public class GroupServiceImpl implements GroupService {
     public Mono<List<GroupDto>> getGroups(Jwt jwt) {
         return groupRepository.findByUserID(UUID.fromString(jwt.getSubject())).collectList();
     }
+
+
 
     public Mono<Void> verifyUserAccess(Long groupId, Jwt jwt){
         return groupRepository.existsByIdAndUserID(groupId, UUID.fromString(jwt.getSubject()))
@@ -59,22 +66,5 @@ public class GroupServiceImpl implements GroupService {
                 });
     }
 
-    private Mono<Map<String, List<String>>> updateTaskFields(SetGroupDto setGroupDto){
-        return groupRepository.findById(setGroupDto.id()).flatMap(group -> {
-            List<String> updateFields = new ArrayList<>();
-            if(setGroupDto.description() != null) {
-                group.setDescription(setGroupDto.description());
-                updateFields.add("description");
-            }
-            if(setGroupDto.name() != null) {
-                group.setName(setGroupDto.name());
-                updateFields.add("name");
-            }
-            if(updateFields.isEmpty()){
-                return Mono.empty();
-            }
-            return groupRepository.save(group).thenReturn(
-                    Map.of("update_fields", updateFields));
-        });
-    }
+
 }
