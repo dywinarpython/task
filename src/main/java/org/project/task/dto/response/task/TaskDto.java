@@ -11,5 +11,6 @@ public record TaskDto(
         LocalDateTime deadLine,
         LocalDateTime createTime,
         LocalDateTime updateTime,
-        String status) {
+        String status,
+        Boolean complete) {
 }

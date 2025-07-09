@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 @Slf4j
-public class KeycloackJwtAuthenticationConvertor implements Converter<Jwt, Flux<GrantedAuthority>> {
+public class KeycloakJwtAuthenticationConvertor implements Converter<Jwt, Flux<GrantedAuthority>> {
     @Override
     public Flux<GrantedAuthority> convert(Jwt jwt) {
         List<String> roles = jwt.getClaimAsStringList("roles");

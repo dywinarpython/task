@@ -46,9 +46,4 @@ public class MainException {
         log.error(e.getMessage());
         return Mono.just(ResponseEntity.status(403).body(Map.of("error", e.getMessage())));
     }
-    @ExceptionHandler(Exception.class)
-    public Mono<ResponseEntity<Map<String, String>>> handler(Exception e){
-        log.error("Возникла ошибка, а именно: {}", e.getMessage());
-        return Mono.just(ResponseEntity.status(500).body(Map.of("error", e.getMessage())));
-    }
 }

@@ -1,0 +1,39 @@
+package org.project.task.serviceImpl;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.project.task.entity.UserRole;
+import org.project.task.repository.UserRoleRepository;
+import org.project.task.service.UserRoleService;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+
+import java.util.Map;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class UserRoleServiceImpl implements UserRoleService {
+
+    private final UserRoleRepository userRoleRepository;
+    private Map<String, Long> roleNameToId;
+
+    @EventListener(ApplicationReadyEvent.class)
+    private void init() {
+        userRoleRepository.findAll()
+                .collectMap(UserRole::getName, UserRole::getId)
+                .doOnNext(map -> roleNameToId = map)
+                .subscribe();
+    }
+
+    public Mono<Long> findRoleIdByName(String name) {
+        Long id = roleNameToId.get(name);
+        if(id == null){
+            log.error("Возникла критическая ошибка в поиске ролей, а именно роль с имененм {} не найдена", name);
+            return Mono.error(new RuntimeException("Роль с имененем: " + name + "не найдена"));
+        }
+        return Mono.just(id);
+    }
+}

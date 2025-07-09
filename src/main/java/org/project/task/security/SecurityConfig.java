@@ -12,7 +12,7 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain mainSecurityFilterChain(ServerHttpSecurity http) {
         ReactiveJwtAuthenticationConverter converter = new ReactiveJwtAuthenticationConverter();
-        converter.setJwtGrantedAuthoritiesConverter(new KeycloackJwtAuthenticationConvertor());
+        converter.setJwtGrantedAuthoritiesConverter(new KeycloakJwtAuthenticationConvertor());
 
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)

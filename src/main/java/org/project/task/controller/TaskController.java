@@ -72,20 +72,20 @@ public class TaskController {
             summary = "Удаление задачи",
             responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Map.class)))
     )
-    @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Map<String, String>>> deleteTask(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt){
-        return taskService.delTask(id, jwt)
+    @DeleteMapping("/{taskId}")
+    public Mono<ResponseEntity<Map<String, String>>> deleteTask(@PathVariable Long taskId, @AuthenticationPrincipal Jwt jwt){
+        return taskService.delTask(taskId, jwt)
                 .thenReturn(ResponseEntity.status(200).body(Map.of("message", "Задача удалена")));
     }
 
     @Operation(
-            summary = "Получение задач, созданных пользователем",
+            summary = "Получение задач, созданных пользователем для определенной группы",
             parameters = {
                     @Parameter(
-                            name = "id",
+                            name = "groupId",
                             description = "Идентификатор группы",
                             required = true,
-                            in = ParameterIn.PATH
+                            in = ParameterIn.QUERY
                     ),
                     @Parameter(
                             name = "timeZone",
@@ -101,9 +101,9 @@ public class TaskController {
                     content = @Content(schema = @Schema(implementation = ListTaskDto.class))
             )
     )
-    @GetMapping("/{id}/")
+    @GetMapping
     public Mono<ResponseEntity<Map<String, List<TaskDto>>>> getTasks(
-            @PathVariable(value = "id") Long groupId,
+            @RequestParam Long groupId,
             @RequestParam String timeZone,
             @AuthenticationPrincipal Jwt jwt
     ) {

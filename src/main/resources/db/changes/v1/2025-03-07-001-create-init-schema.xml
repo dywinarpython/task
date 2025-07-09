@@ -23,6 +23,9 @@
             <constraints nullable="false"/>
         </column>
         <column name="update_time" type="timestamp(6)"/>
+        <column name="complete" type="boolean" defaultValue="false">
+            <constraints nullable="false"/>
+        </column>
     </createTable>
     </changeSet>
 </databaseChangeLog>

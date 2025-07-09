@@ -10,8 +10,7 @@ import java.util.List;
 
 public interface GroupService {
     Mono<Void> saveGroup(Mono<CreateGroupDto> createGroupDtoMono, Jwt jwt);
-    Mono<Void> setTask(Mono<SetGroupDto> setGroupDtoMono, Jwt jwt);
+    Mono<Void> setGroup(Mono<SetGroupDto> setGroupDtoMono, Jwt jwt);
     Mono<Void> delGroup(Long id, Jwt jwt);
     Mono<List<GroupDto>> getGroups(Jwt jwt);
-    Mono<Void> verifyUserAccess(Long groupId, Jwt jwt);
 }

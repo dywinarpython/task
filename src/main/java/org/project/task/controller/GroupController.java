@@ -53,7 +53,7 @@ public class GroupController {
     )
     @PatchMapping
     public Mono<ResponseEntity<Map<String, String>>> setGroup(@RequestBody @Valid Mono<SetGroupDto> setGroupDtoMono, @AuthenticationPrincipal Jwt jwt){
-        return groupService.setTask(setGroupDtoMono, jwt).thenReturn(ResponseEntity.ok(Map.of("message", "Группа измененна")));
+        return groupService.setGroup(setGroupDtoMono, jwt).thenReturn(ResponseEntity.ok(Map.of("message", "Группа измененна")));
     }
     @Operation(
             summary = "Удаление группы",

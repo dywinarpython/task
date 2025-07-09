@@ -29,4 +29,6 @@ public class Task {
     private LocalDateTime updateTime;
 
     private String status;
+
+    private Boolean complete;
 }

@@ -44,6 +44,13 @@ public interface MapperTask {
         return updateMap;
     }
 
+    default Map<SqlIdentifier, Object> createCompleteTask(){
+        Map<SqlIdentifier, Object> updateMap = new HashMap<>();
+        updateMap.put(SqlIdentifier.quoted("update_time"), LocalDateTime.now());
+        updateMap.put(SqlIdentifier.quoted("complete"), true);
+        return updateMap;
+    }
+
     @Named("millisToDeadlineDateTime")
     default LocalDateTime millisToDeadlineDateTime(Long millis){
         if(millis == null) return null;

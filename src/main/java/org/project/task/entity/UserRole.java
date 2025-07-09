@@ -1,23 +1,21 @@
 package org.project.task.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table(name = "\"group\"")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class Group {
+@Table(name = "roles")
+public class UserRole {
 
     @Id
     private Long id;
 
     private String name;
-
-    private String description;
-
-
 }

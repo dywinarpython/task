@@ -15,8 +15,7 @@ public interface TaskService{
     Mono<Void> setTask(Mono<SetTaskDto> setTaskDtoMono, Jwt jwt);
     Mono<Void> delTask(Long id, Jwt jwt);
     Mono<List<TaskDto>> getTasks(String timeZone, Jwt jwt, Long groupId);
-
-
-
+    Mono<List<TaskDto>> getTasksForUser(String timeZone, Jwt jwt, Long groupId);
+    Mono<Void> completeTask(Jwt jwt, Long taskId);
 
 }

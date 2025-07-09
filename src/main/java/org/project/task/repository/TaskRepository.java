@@ -16,6 +16,7 @@ public interface TaskRepository extends ReactiveCrudRepository<Task, Long>, Repo
         from task t
         join group_tasks gt on t.id = gt.task_id
         where gt.group_id = $1
+        order by t.dead_line
         """)
-    Flux<TaskDto> findByGroupID(Long groupID);
+    Flux<TaskDto> findByGroupId(Long groupID);
 }
