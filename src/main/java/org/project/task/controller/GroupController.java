@@ -1,7 +1,6 @@
 package org.project.task.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,6 +11,8 @@ import org.project.task.dto.request.group.CreateGroupDto;
 import org.project.task.dto.request.group.SetGroupDto;
 import org.project.task.dto.request.group.SetUserRole;
 import org.project.task.dto.response.group.ListGroupDto;
+import org.project.task.dto.response.group.ListUserDto;
+import org.project.task.dto.response.group.UserDto;
 import org.project.task.service.GroupService;
 import org.project.task.service.GroupUserService;
 import org.springframework.http.ResponseEntity;
@@ -98,11 +99,11 @@ public class GroupController {
             responseCode = "200",
             description = "Список участников группы",
             content = @Content(
-                    array = @ArraySchema(schema = @Schema(type = "uuid"))
+                    schema = @Schema(implementation = ListUserDto.class)
             ))
     )
     @GetMapping("/{groupId}")
-    public Mono<ResponseEntity<List<UUID>>> getUserFroGroup(@PathVariable Long groupId, @AuthenticationPrincipal Jwt jwt){
+    public Mono<ResponseEntity<List<UserDto>>> getUserFroGroup(@PathVariable Long groupId, @AuthenticationPrincipal Jwt jwt){
         return groupUserService.getAllUserForGroup(groupId, jwt).map(ResponseEntity::ok);
     }
 }

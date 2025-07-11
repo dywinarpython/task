@@ -20,6 +20,17 @@ spring:
     url: ${SPRING_DATASOURCE_URL_REACTIVE:r2dbc:postgresql://localhost:5432/taskDb}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:123456}
+    pool:
+      initial-size: 2
+      max-size: 10
+      max-idle-time: 30m
+      max-life-time: 2h
+      validation-query: SELECT 1
+      validation-depth: remote
+      leak-detection-threshold: 3000
+    properties:
+        connectTimeout: 5s
+        socketTimeout: 30s
   security:
     oauth2:
       client:
@@ -55,5 +66,3 @@ management:
     web:
       exposure:
         include: health, beans, prometheus
-
-

@@ -4,6 +4,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.task.dto.request.group.SetUserRole;
+import org.project.task.dto.response.group.UserDto;
 import org.project.task.entity.GroupUsers;
 import org.project.task.repository.GroupUsersRepository;
 import org.project.task.service.GroupUserService;
@@ -160,8 +161,8 @@ public class GroupUserServiceImpl implements GroupUserService {
 
 
     @Override
-    public Mono<List<UUID>> getAllUserForGroup(Long groupId, Jwt jwt) {
-        return verifyAdminAccess(groupId, jwt).then(groupUsersRepository.findUserIDByGroupId(groupId).collectList());
+    public Mono<List<UserDto>> getAllUserForGroup(Long groupId, Jwt jwt) {
+        return verifyAdminAccess(groupId, jwt).then(groupUsersRepository.findUserIdByGroupId(groupId).collectList());
     }
 
     private Mono<Void> verifyRoleAccess(Long groupId, Jwt jwt, List<Long> roleId){

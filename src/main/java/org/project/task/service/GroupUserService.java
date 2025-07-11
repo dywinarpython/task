@@ -1,6 +1,7 @@
 package org.project.task.service;
 
 import org.project.task.dto.request.group.SetUserRole;
+import org.project.task.dto.response.group.UserDto;
 import org.springframework.security.oauth2.jwt.Jwt;
 import reactor.core.publisher.Mono;
 
@@ -19,5 +20,5 @@ public interface GroupUserService {
     Mono<Void> verifyAdminAccess(Long groupId, Jwt jwt);
     Mono<Void> verifyOwnerAccess(Long groupId, Jwt jwt);
     Mono<Void> assigningRights(Jwt jwt, Mono<SetUserRole> setUserRoleMono);
-    Mono<List<UUID>> getAllUserForGroup(Long groupId, Jwt jwt);
+    Mono<List<UserDto>> getAllUserForGroup(Long groupId, Jwt jwt);
 }

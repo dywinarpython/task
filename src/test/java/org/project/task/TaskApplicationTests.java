@@ -1,6 +1,5 @@
 package org.project.task;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,18 +7,20 @@ import org.junit.jupiter.api.Test;
 import org.project.task.config.TestSecurityConfig;
 import org.project.task.dto.request.group.CreateGroupDto;
 import org.project.task.dto.request.group.SetGroupDto;
+import org.project.task.dto.request.group.SetUserRole;
 import org.project.task.dto.request.task.CreateTaskDto;
 import org.project.task.dto.request.task.CreateTaskWithUserDto;
 import org.project.task.dto.request.task.SetTaskDto;
 import org.project.task.dto.response.group.GroupDto;
+import org.project.task.dto.response.group.UserDto;
 import org.project.task.dto.response.task.TaskDto;
 import org.project.task.entity.Group;
 import org.project.task.entity.GroupTasks;
+import org.project.task.entity.GroupUsers;
 import org.project.task.entity.Task;
 import org.project.task.mapper.task.MapperTask;
-import org.project.task.repository.GroupRepository;
-import org.project.task.repository.GroupTasksRepository;
-import org.project.task.repository.TaskRepository;
+import org.project.task.repository.*;
+import org.project.task.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
@@ -65,7 +66,11 @@ class TaskApplicationTests {
     @Autowired
     private GroupTasksRepository groupTasksRepository;
 
+    @Autowired
+    private GroupUsersRepository groupUsersRepository;
 
+    @Autowired
+    private UserRoleService userRoleService;
 
     @Autowired
     private MapperTask mapperTask;
@@ -82,12 +87,11 @@ class TaskApplicationTests {
     private Task task;
     private Group group;
 
-/*    Создания задачи при привязке к группу,
-   поскольку в методах set и delete поиск основываеться на сущности group_task
+/*   Creating an issue when linking to a group,
+   because in the set and delete methods, the search is based on the group_task entity.
  */
     @BeforeEach
     void setUp() {
-
         CreateGroupDto createGroupDto = new CreateGroupDto("Компания", "Без описания");
         webTestClient
                 .mutateWith(mockJwt().jwt(jwt))
@@ -262,6 +266,155 @@ class TaskApplicationTests {
                 .verify();
     }
 
+    @Test
+    @DisplayName("Проверка PATCH /api/v1/group/role")
+    void testSetRoleUserInGroup(){
+        // Initially, we save the user, because in the future we will change his role.
+        UUID userId = UUID.randomUUID();
+        groupUsersRepository.save(GroupUsers.builder().userId(userId).groupId(group.getId()).roleId(userRoleService.findRoleIdByName("MEMBER").block()).build()).block();
+
+        SetUserRole setUserRole = new SetUserRole(group.getId(), userId, "ADMIN");
+        webTestClient.mutateWith(mockJwt().jwt(jwt))
+                .patch()
+                .uri("/api/v1/group/role")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(setUserRole)
+                .exchange()
+                .expectStatus()
+                .isOk();
+        Flux<UserDto> lsUserDto = groupUsersRepository.findUserIdByGroupId(group.getId());
+
+        StepVerifier.create(lsUserDto.filter(userDto -> userDto.userId().equals(userId)))
+                .assertNext(userDto -> assertEquals("ADMIN", userDto.role()))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Проверка DELETE /api/v1/group/{id}")
+    void testDeleteGroup(){
+
+        webTestClient.mutateWith(mockJwt().jwt(jwt))
+                .delete()
+                .uri("/api/v1/group/" + group.getId())
+                .exchange()
+                .expectStatus().isOk();
+        Group group1 = groupRepository.findByName(group.getName()).blockFirst();
+        assertNull(group1);
+        /* Since each test creates a task for the group,
+        it is therefore worth checking that this task was also deleted when it was deleted. */
+        Task ts = taskRepository.findById(task.getId()).block();
+        assertNull(ts);
+    }
 
 
+    @Test
+    @DisplayName("Проверка DELETE /api/v1/group/{groupId}/{userId}")
+    void testForcedDeleteUserInGroup(){
+        // Initially, we are saving the user, because in the future we will forcibly delete it.
+        UUID userId = UUID.randomUUID();
+        groupUsersRepository.save(GroupUsers.builder().userId(userId).groupId(group.getId()).roleId(userRoleService.findRoleIdByName("MEMBER").block()).build()).block();
+
+        webTestClient.mutateWith(mockJwt().jwt(jwt))
+                .delete()
+                .uri("/api/v1/group/" + group.getId() + "/" + userId)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        Flux<UserDto> lsUserDto = groupUsersRepository.findUserIdByGroupId(group.getId());
+        StepVerifier.create(lsUserDto.filter(userDto -> userDto.userId().equals(userId)))
+                .expectNextCount(0)
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Проверка POST /api/v1/group/user/{groupId} и POST /api/v1/group/user/invite/{userId}")
+    void testCreateTokenAndLoginWithHim(){
+
+        Flux<UUID> token = webTestClient.mutateWith(mockJwt().jwt(jwt))
+                .post()
+                .uri("/api/v1/group/user/" + group.getId())
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .returnResult(UUID.class)
+                .getResponseBody();
+        UUID tokenEntry = token.blockFirst();
+
+        UUID userId = UUID.randomUUID();
+        Jwt jwt1 = Jwt.withTokenValue("dummy-token")
+                .header("alg", "none")
+                .claim("sub", userId)
+                .build();
+        webTestClient.mutateWith(mockJwt().jwt(jwt1))
+                .post()
+                .uri("/api/v1/group/user/invite/" + tokenEntry)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        Flux<UserDto> lsUserDto = groupUsersRepository.findUserIdByGroupId(group.getId());
+        StepVerifier.create(lsUserDto.filter(userDto -> userDto.userId().equals(userId)))
+                .assertNext(userDto -> assertEquals("MEMBER", userDto.role()))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Проверка GET /api/v1/group/user")
+    void testGetGroupsThatUserBelongs(){
+        // Creating another group for improved verification
+        Flux<Long> flux = webTestClient.mutateWith(mockJwt().jwt(jwt))
+                .get()
+                .uri("/api/v1/group/user")
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .returnResult(Long.class)
+                .getResponseBody();
+        StepVerifier.create(flux.collectList())
+                .assertNext(ls -> assertFalse(ls.isEmpty()))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Проверка PATCH /api/v1/user/task/{taskId}")
+    void testCompleteTask(){
+        webTestClient.mutateWith(mockJwt().jwt(jwt))
+                .patch()
+                .uri("/api/v1/user/task/" + task.getId())
+                .exchange()
+                .expectStatus()
+                .isOk();
+        Mono<Task> taskDtoMono = taskRepository.findById(task.getId());
+        StepVerifier.create(taskDtoMono)
+                .assertNext(task1 -> assertTrue(task1.getComplete()))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Проверка GET /api/v1/user/task")
+    void testGetTaskForUser(){
+        Flux<TaskDto> taskDtoFlux = webTestClient.mutateWith(mockJwt().jwt(jwt))
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder.path("/api/v1/user/task")
+                                .queryParam("groupId", group.getId())
+                                .queryParam("timeZone", "Europe/Moscow")
+                                .build()
+                )
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .returnResult(TaskDto.class)
+                .getResponseBody();
+        StepVerifier.create(taskDtoFlux)
+                .expectNextCount(1)
+                .expectComplete()
+                .verify();
+    }
 }

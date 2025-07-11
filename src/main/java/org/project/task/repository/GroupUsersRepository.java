@@ -1,5 +1,6 @@
 package org.project.task.repository;
 
+import org.project.task.dto.response.group.UserDto;
 import org.project.task.entity.GroupUsers;
 import org.springframework.data.r2dbc.repository.Modifying;
 import org.springframework.data.r2dbc.repository.Query;
@@ -49,11 +50,12 @@ public interface GroupUsersRepository extends ReactiveCrudRepository<GroupUsers,
     Mono<Long> deleteByUserIDAndByGroupId(@Param("groupId") Long groupId, @Param("userId") UUID userId, @Param("roleId") Long roleId);
 
     @Query("""
-            select user_id
-            from group_users
+            select user_id, r.name as role
+            from group_users gu
+            join roles r on gu.role_id = r.id
             where group_id = :groupId
             """)
-    Flux<UUID> findUserIDByGroupId(@Param("groupId") Long groupId);
+    Flux<UserDto> findUserIdByGroupId(@Param("groupId") Long groupId);
 
 
 }

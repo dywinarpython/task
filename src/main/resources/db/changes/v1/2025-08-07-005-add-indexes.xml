@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+    <changeSet id="2025-08-07-005-add-indexes.xml" author="Dywinar">
+       <sql>
+           CREATE INDEX idx_group_users_user_id ON group_users(user_id);
+           CREATE INDEX idx_group_tasks_task_id ON group_tasks(task_id);
+           CREATE INDEX idx_group_tasks_group_id ON group_tasks(group_id);
+           CREATE INDEX idx_task_dead_line ON task(dead_line);
+       </sql>
+    </changeSet>
+</databaseChangeLog>
