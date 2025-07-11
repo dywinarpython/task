@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.project.task.dto.request.task.CreateTaskDto;
 import org.project.task.dto.request.task.CreateTaskWithUserDto;
 import org.project.task.dto.request.task.SetTaskDto;
-import org.project.task.dto.response.task.ListTaskDto;
-import org.project.task.dto.response.task.TaskDto;
+import org.project.task.dto.response.task.ListTaskWithUserDto;
+import org.project.task.dto.response.task.TaskWithUserDto;
 import org.project.task.service.TaskService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -98,11 +98,11 @@ public class TaskController {
             responses = @ApiResponse(
                     responseCode = "200",
                     description = "Список задач",
-                    content = @Content(schema = @Schema(implementation = ListTaskDto.class))
+                    content = @Content(schema = @Schema(implementation = ListTaskWithUserDto.class))
             )
     )
     @GetMapping
-    public Mono<ResponseEntity<Map<String, List<TaskDto>>>> getTasks(
+    public Mono<ResponseEntity<Map<String, List<TaskWithUserDto>>>> getTasks(
             @RequestParam Long groupId,
             @RequestParam String timeZone,
             @AuthenticationPrincipal Jwt jwt

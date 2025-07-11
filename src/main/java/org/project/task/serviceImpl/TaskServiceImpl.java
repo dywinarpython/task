@@ -1,10 +1,12 @@
 package org.project.task.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.project.task.dto.request.task.CreateTaskDto;
 import org.project.task.dto.request.task.CreateTaskWithUserDto;
 import org.project.task.dto.request.task.SetTaskDto;
 import org.project.task.dto.response.task.TaskDto;
+import org.project.task.dto.response.task.TaskWithUserDto;
 import org.project.task.entity.Task;
 import org.project.task.mapper.task.MapperTask;
 import org.project.task.repository.TaskRepository;
@@ -19,6 +21,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -38,21 +41,20 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public Mono<List<TaskDto>> getTasks(String timeZone, Jwt jwt, Long groupId) {
+    public Mono<List<TaskWithUserDto>> getTasks(String timeZone, Jwt jwt, Long groupId) {
         return groupUserService.verifyAdminAccess(groupId, jwt).then(
-                taskRepository.findByGroupId(groupId).map(task -> mapperTask.taskToTaskDto(task, timeZone)).collectList());
+                taskRepository.findByGroupId(groupId).map(task -> mapperTask.taskWithUserDtoToTaskWithUserDto(task, timeZone)).collectList());
     }
 
     @Override
     public Mono<List<TaskDto>> getTasksForUser(String timeZone, Jwt jwt, Long groupId) {
-        return groupUserService.validateUserInGroup(groupId, UUID.fromString(jwt.getSubject()))
+        return groupUserService.checkUserInGroup(groupId, UUID.fromString(jwt.getSubject()))
                 .then(groupTasksService.findTaskForUserWithGroupId(jwt, groupId).collectList());
     }
 
     @Override
     public Mono<Void> completeTask(Jwt jwt, Long taskId) {
-        return groupTasksService.findGroupIdByTaskID(taskId)
-                .flatMap(groupId -> groupTasksService.checkingWhetherUserIsPerformingThisTask(jwt, groupId, taskId)).then(
+        return groupTasksService.checkingWhetherUserIsPerformingThisTask(jwt, taskId).then(
                         taskRepository.updateFields(mapperTask.createCompleteTask(), Task.class, "id", taskId));
     }
 
@@ -71,7 +73,7 @@ public class TaskServiceImpl implements TaskService {
         return createTaskWithUserDtoMono
                 .flatMap(dto ->  groupUserService.verifyAdminAccess(dto.groupId(), jwt)
                         .thenReturn(dto))
-                .flatMap(dto -> groupUserService.validateUserInGroup(dto.groupId(), dto.userID()).thenReturn(dto))
+                .flatMap(dto -> groupUserService.checkUserInGroup(dto.groupId(), dto.userID()).thenReturn(dto))
                 .flatMap(dto ->
                         taskRepository.save(mapperTask.taskDtoToTask(dto))
                                 .flatMap(task -> groupTasksService.saveTask(dto.groupId(), task.getId(), dto.userID()))
@@ -92,11 +94,17 @@ public class TaskServiceImpl implements TaskService {
     }
     @Override
     public Mono<Void> delTask(Long id, Jwt jwt) {
-        return groupTasksService.findGroupIdByTaskID(id).flatMap(
-                groupID ->
-                groupUserService.verifyAdminAccess(groupID, jwt)
-                .then(taskRepository.deleteById(id))
-                );
+        return groupTasksService.findGroupIdByTaskID(id)
+                .flatMap(groupId ->
+                        groupUserService.verifyAdminAccess(groupId, jwt)
+                                .then(taskRepository.deleteByIdReturning(id).next())
+                )
+                .switchIfEmpty(Mono.error(new NoSuchElementException("Task with id: " + id + " is not found")))
+                .then();
     }
 
+    @Override
+    public Mono<Void> delAllTaskByGroupId(Long groupId) {
+        return taskRepository.deleteTaskByGroupId(groupId);
+    }
 }

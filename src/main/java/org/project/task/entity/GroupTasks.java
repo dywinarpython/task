@@ -19,9 +19,9 @@ public class GroupTasks {
 
     private Long groupId;
 
-    private Long taskID;
+    private Long taskId;
 
-    private UUID userID;
+    private UUID userId;
 
 
 }

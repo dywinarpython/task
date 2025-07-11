@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
-    <changeSet id="2025-08-07-003-add-group_tasks.xml" author="Dywinar">
+    <changeSet id="2025-08-07-004-add-group_users.xml" author="Dywinar">
         <createTable tableName="roles">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.core.codec.DecodingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,6 +21,14 @@ import java.util.NoSuchElementException;
 @Hidden
 @Slf4j
 public class MainException {
+
+    @ExceptionHandler(DecodingException.class)
+    public Mono<ResponseEntity<Map<String, String>>> handleDecodingErrors(DecodingException ex) {
+        String message = ex.getMessage();
+        log.warn(message);
+        return Mono.just(ResponseEntity.badRequest()
+                .body(Map.of("warn", "Incorrect data was sent to the server")));
+    }
 
     @ExceptionHandler(WebExchangeBindException.class)
     public Mono<ResponseEntity<List<String>>> handleValidationException(WebExchangeBindException ex) {

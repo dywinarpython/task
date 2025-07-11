@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.project.task.dto.request.group.CreateGroupDto;
 import org.project.task.dto.request.group.SetGroupDto;
-import org.project.task.dto.response.group.GroupDto;
+import org.project.task.dto.request.group.SetUserRole;
 import org.project.task.dto.response.group.ListGroupDto;
 import org.project.task.service.GroupService;
 import org.project.task.service.GroupUserService;
@@ -18,11 +18,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/group")
@@ -44,9 +44,6 @@ public class GroupController {
                 .thenReturn(ResponseEntity.status(201).body(Map.of("message", "Группа сохранена")));
     }
 
-
-
-
     @Operation(
             summary = "Изменение группы",
             responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Map.class)))
@@ -55,6 +52,17 @@ public class GroupController {
     public Mono<ResponseEntity<Map<String, String>>> setGroup(@RequestBody @Valid Mono<SetGroupDto> setGroupDtoMono, @AuthenticationPrincipal Jwt jwt){
         return groupService.setGroup(setGroupDtoMono, jwt).thenReturn(ResponseEntity.ok(Map.of("message", "Группа измененна")));
     }
+
+    @Operation(
+            summary = "Изменение прав пользователей для определенной группы",
+            responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Map.class)))
+    )
+    @PatchMapping("/role")
+    public Mono<ResponseEntity<Map<String, String>>> setUserRoleGroup(@RequestBody @Valid Mono<SetUserRole> setUserRoleMono, @AuthenticationPrincipal Jwt jwt){
+        return groupUserService.assigningRights(jwt, setUserRoleMono).thenReturn(ResponseEntity.ok(Map.of("message", "Прав пользователя изменены")));
+    }
+
+
     @Operation(
             summary = "Удаление группы",
             responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Map.class)))
@@ -64,25 +72,37 @@ public class GroupController {
         return groupService.delGroup(id, jwt)
                 .thenReturn(ResponseEntity.status(200).body(Map.of("message", "Группа удалена")));
     }
+
+    @Operation(
+            summary = "Принудителное удаление пользователя из группы, назначаннные задачи к нему остануться",
+            responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = Map.class)))
+    )
+    @DeleteMapping("/{groupId}/{userId}")
+    public Mono<ResponseEntity<Map<String, String>>> deleteUserInGroup(@PathVariable Long groupId, @PathVariable UUID userId, @AuthenticationPrincipal Jwt jwt){
+        return groupUserService.deleteUserInGroup(jwt, userId, groupId)
+                .thenReturn(ResponseEntity.status(200).body(Map.of("message", "Пользователь удален с группы")));
+    }
+
     @Operation(
             summary = "Получение групп созданных пользователем",
             responses = @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = ListGroupDto.class)))
     )
     @GetMapping
-    public Mono<ResponseEntity<Map<String, List<GroupDto>>>> getGroups(@AuthenticationPrincipal Jwt jwt){
-        return groupService.getGroups(jwt).map(groups -> ResponseEntity.ok(Map.of("groups", groups)));
+    public Mono<ResponseEntity<ListGroupDto>> getGroups(@AuthenticationPrincipal Jwt jwt){
+        return groupService.getGroups(jwt).map(ResponseEntity::ok);
     }
 
     @Operation(
-            summary = "Получение id групп, пользователя который в них вошел",
+            summary = "Получение участников группы",
             responses = @ApiResponse(
             responseCode = "200",
-            description = "Список идентификаторов",
-            content = @Content(array = @ArraySchema(schema = @Schema(type = "integer", format = "int64")))
-            )
+            description = "Список участников группы",
+            content = @Content(
+                    array = @ArraySchema(schema = @Schema(type = "uuid"))
+            ))
     )
-    @GetMapping("/user")
-    public ResponseEntity<Flux<Long>> getGroupsId(@AuthenticationPrincipal Jwt jwt){
-        return ResponseEntity.ok(groupUserService.getGroupsId(jwt));
+    @GetMapping("/{groupId}")
+    public Mono<ResponseEntity<List<UUID>>> getUserFroGroup(@PathVariable Long groupId, @AuthenticationPrincipal Jwt jwt){
+        return groupUserService.getAllUserForGroup(groupId, jwt).map(ResponseEntity::ok);
     }
 }

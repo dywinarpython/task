@@ -20,11 +20,11 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Управление задачамми пользователей")
+@Tag(name = "Управление задачами пользователями")
 @RestController
 @RequestMapping("/api/v1/user/task")
 @RequiredArgsConstructor
-public class UserController {
+public class UserTaskController {
 
     private final TaskService taskService;
 
@@ -69,5 +69,4 @@ public class UserController {
     public Mono<ResponseEntity<Map<String, String>>> completeTask(@PathVariable("taskId") Long taskId, @AuthenticationPrincipal Jwt jwt){
         return taskService.completeTask(jwt, taskId).thenReturn(ResponseEntity.ok(Map.of("message", "Задача завершена")));
     }
-
 }

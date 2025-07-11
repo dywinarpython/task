@@ -15,4 +15,5 @@ public record CreateTaskDto(
         @Min(message = "Минимальный срок выполнения задачи 30 минут", value = 1800000L)
         Long deadLine,
         @NotNull(message = "Поле status не может быть null") @Size(min = 3, max = 20,  message = "Длины status name от 3 до 20") String status) {
+
 }

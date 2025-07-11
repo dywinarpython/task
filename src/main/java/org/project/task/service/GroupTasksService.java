@@ -16,7 +16,7 @@ public interface GroupTasksService {
 
     Flux<TaskDto> findTaskForUserWithGroupId(Jwt jwt, Long groupId);
 
-    Mono<Void> checkingWhetherUserIsPerformingThisTask(Jwt jwt, Long groupId, Long taskId);
+    Mono<Void> checkingWhetherUserIsPerformingThisTask(Jwt jwt, Long taskId);
 
 
 }

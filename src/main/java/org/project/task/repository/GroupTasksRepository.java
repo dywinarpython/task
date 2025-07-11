@@ -13,6 +13,8 @@ import java.util.UUID;
 
 public interface GroupTasksRepository extends ReactiveCrudRepository<GroupTasks, Long> {
 
+    Mono<Boolean> existsByTaskId(Long taskId);
+
     @Query("""
             select group_id
             from group_tasks g
@@ -30,12 +32,17 @@ public interface GroupTasksRepository extends ReactiveCrudRepository<GroupTasks,
     Flux<TaskDto> findTaskForUserWithGroupID(@Param("userId") UUID userId, @Param("groupId") Long groupId);
 
     @Query("""
-            select exists(
-                select 1
-                from group_tasks g
-                where (g.user_id IS NULL or g.user_id = :userId)
-                and g.group_id = :groupId and g.task_id = :taskId)
-    """)
-    Mono<Boolean> checkingWhetherUserIsPerformingThisTask(@Param("userId") UUID userId, @Param("groupId") Long groupId, @Param("taskId") Long taskId);
+    select exists(
+        select 1
+        from group_tasks gt
+        join group_users gs on gt.group_id = gs.group_id
+        where gs.user_id = :userId
+             and gt.task_id = :taskId
+    )
+""")
+    Mono<Boolean> checkingWhetherUserIsPerformingThisTask(
+            @Param("userId") UUID userId,
+            @Param("taskId") Long taskId
+    );
 
 }

@@ -4,7 +4,7 @@ import org.mapstruct.*;
 import org.project.task.dto.request.task.CreateTaskDto;
 import org.project.task.dto.request.task.CreateTaskWithUserDto;
 import org.project.task.dto.request.task.SetTaskDto;
-import org.project.task.dto.response.task.TaskDto;
+import org.project.task.dto.response.task.TaskWithUserDto;
 import org.project.task.entity.Task;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
 
@@ -24,12 +24,13 @@ public interface MapperTask {
     @Mapping(source = "deadLine", target = "deadLine", qualifiedByName = "millisToDeadlineDateTime")
     Task taskDtoToTask(CreateTaskWithUserDto createTaskWithUserDto);
 
+
     @Mappings(value = {
             @Mapping(source = "createTime", target = "createTime", qualifiedByName = "timeToTimeZone"),
             @Mapping(source = "updateTime", target = "updateTime", qualifiedByName = "timeToTimeZone"),
             @Mapping(source = "deadLine", target = "deadLine", qualifiedByName = "timeToTimeZone")
     })
-    TaskDto taskToTaskDto(TaskDto taskDto, @Context String timeZone);
+    TaskWithUserDto taskWithUserDtoToTaskWithUserDto(TaskWithUserDto taskWithUserDto, @Context String timeZone);
 
 
 
@@ -68,7 +69,7 @@ public interface MapperTask {
     }
 
     @AfterMapping
-    default void setCreateTimeAndUserID(@MappingTarget Task task) {
+    default void setCreateTime(@MappingTarget Task task) {
         task.setCreateTime(LocalDateTime.now());
     }
 

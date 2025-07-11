@@ -32,7 +32,7 @@ public class UserRoleServiceImpl implements UserRoleService {
         Long id = roleNameToId.get(name);
         if(id == null){
             log.error("Возникла критическая ошибка в поиске ролей, а именно роль с имененм {} не найдена", name);
-            return Mono.error(new RuntimeException("Роль с имененем: " + name + "не найдена"));
+            return Mono.error(new RuntimeException("Role with name: " + name + "not found"));
         }
         return Mono.just(id);
     }
