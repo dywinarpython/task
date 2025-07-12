@@ -33,4 +33,13 @@ build/
 .vscode/
 
 .env
-/logs
+# Исключаем папки с логами
+log/
+logs/
+
+
+.mvn/
+mvn/wrapper/
+mvnw
+mvnw.cmd
+

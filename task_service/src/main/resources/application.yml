@@ -1,0 +1,56 @@
+
+spring:
+  application:
+    name: task
+  cache:
+    type: redis
+  data:
+      redis:
+        host: localhost
+        port: 6379
+        repositories:
+          enabled: false
+  liquibase:
+    change-log: classpath:db/changelog-master.xml
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/taskDb}
+    user: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:123456}
+    enabled: true
+  r2dbc :
+    url: ${SPRING_DATASOURCE_URL_REACTIVE:r2dbc:postgresql://localhost:5432/taskDb}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:123456}
+    pool:
+      initial-size: 2
+      max-size: 10
+      max-idle-time: 30m
+      max-life-time: 2h
+      validation-query: SELECT 1
+      validation-depth: remote
+      leak-detection-threshold: 3000
+    properties:
+        connectTimeout: 5s
+        socketTimeout: 30s
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/task
+server:
+  port: 9090
+logging:
+  file:
+    name: logs/app.log
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
+    io.r2dbc.postgresql.DELETE: DEBUG
+
+springdoc:
+  swagger-ui:
+    display-request-duration: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, beans, prometheus
