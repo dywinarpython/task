@@ -10,25 +10,22 @@ spring:
         port: 6379
         repositories:
           enabled: false
+      mongodb:
+        uri: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_URL}/notifications?authSource=admin
   security:
     oauth2:
-      client:
-        registration:
-          keycloak:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
-            authorization-grant-type: client_credentials
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8080/realms/task
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/task
 server:
-  port: 8001
+  port: 8002
 logging:
+  level:
+    org.mongodb.driver: DEBUG
+    org.springframework.data.mongodb.core: DEBUG
   file:
     name: logs/app.log
+
 
 springdoc:
   swagger-ui:
@@ -38,3 +35,5 @@ management:
     web:
       exposure:
         include: health, beans, prometheus
+pageable:
+  size: 10
