@@ -51,14 +51,6 @@ public class NotificationController {
         return notificationService.findNotificationsByUserId(jwt, timeZone, page).map(ResponseEntity::ok);
     }
 
-    @Operation(
-            summary = "Сохранение уведомления"
-
-    )
-    @PostMapping
-    public Mono<ResponseEntity<Map<String, String>>> getNotificationByUserID(@RequestBody CreateNotificationDto createNotificationDto, @AuthenticationPrincipal Jwt jwt){
-        return notificationService.saveNotification(createNotificationDto).thenReturn(ResponseEntity.ok(Map.of("message", "Уведомление сохраненно")));
-    }
 
     @Operation(
             summary = "Прочитать уведомления"

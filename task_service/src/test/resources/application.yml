@@ -15,9 +15,20 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/task
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        enable.idempotence: true
+        delivery.timeout.ms: 20000
+        acks: 1
 logging:
-  file:
-      name: logs/app.log
   level:
       io.r2dbc.postgresql.QUERY: DEBUG
       io.r2dbc.postgresql.PARAM: DEBUG
+kafka:
+  partitions: 2
+pageable:
+  size: 10

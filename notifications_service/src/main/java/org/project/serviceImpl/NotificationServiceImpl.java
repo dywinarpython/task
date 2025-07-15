@@ -3,6 +3,7 @@ package org.project.serviceImpl;
 import lombok.RequiredArgsConstructor;
 import org.project.dto.CreateNotificationDto;
 import org.project.dto.ListNotificationDto;
+import org.project.dto.kafka.NotificationPayload;
 import org.project.mapper.NotificationMapper;
 import org.project.repository.NotificationRepository;
 import org.project.service.NotificationService;
@@ -34,6 +35,11 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public Mono<Void> saveNotification(CreateNotificationDto createNotificationDto) {
         return notificationRepository.save(notificationMapper.createNotificationDtoToNotification(createNotificationDto)).then();
+    }
+
+    @Override
+    public Mono<Void> saveAllNotifications(NotificationPayload notificationPayload) {
+        return notificationRepository.saveAll(notificationMapper.createNotificationPayloadToNotification(notificationPayload)).then();
     }
 
     @Override

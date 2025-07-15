@@ -17,14 +17,22 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/task
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: notification-consumer-group
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+
 server:
   port: 8002
 logging:
   level:
     org.mongodb.driver: DEBUG
     org.springframework.data.mongodb.core: DEBUG
-  file:
-    name: logs/app.log
 
 
 springdoc:
