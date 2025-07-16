@@ -11,6 +11,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @TestConfiguration
 public class TestSecurityConfig {
 
+
     @Bean
     @Primary
     public SecurityWebFilterChain testSecurityFilterChain(ServerHttpSecurity http) {

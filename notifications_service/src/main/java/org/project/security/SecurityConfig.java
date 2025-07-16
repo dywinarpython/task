@@ -8,7 +8,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 public class SecurityConfig {
-
     @Bean
     public SecurityWebFilterChain mainSecurityFilterChain(ServerHttpSecurity http) {
         ReactiveJwtAuthenticationConverter converter = new ReactiveJwtAuthenticationConverter();
@@ -22,6 +21,7 @@ public class SecurityConfig {
                         .pathMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
+                                "/app/notifications/**",
                                 "/webjars/**").permitAll()
                         .anyExchange().hasRole("user")
                 )

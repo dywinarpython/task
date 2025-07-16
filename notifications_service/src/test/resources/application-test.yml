@@ -1,0 +1,12 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/task
+logging:
+  level:
+      io.r2dbc.postgresql.QUERY: DEBUG
+      io.r2dbc.postgresql.PARAM: DEBUG
+pageable:
+  size: 10

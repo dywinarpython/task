@@ -2,14 +2,7 @@
 spring:
   application:
     name: task
-  cache:
-    type: redis
   data:
-      redis:
-        host: localhost
-        port: 6379
-        repositories:
-          enabled: false
       mongodb:
         uri: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_URL}/notifications?authSource=admin
   security:
@@ -26,13 +19,18 @@ spring:
           json:
             trusted:
               packages: "*"
-
 server:
   port: 8002
 logging:
   level:
     org.mongodb.driver: DEBUG
     org.springframework.data.mongodb.core: DEBUG
+    root: INFO
+    org.springframework.web.reactive.socket: DEBUG
+    org.springframework.security: DEBUG
+    reactor.netty: DEBUG
+    org.project: DEBUG
+
 
 
 springdoc:

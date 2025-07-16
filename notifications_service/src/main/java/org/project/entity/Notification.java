@@ -20,5 +20,4 @@ public class Notification {
     private String message;
     private boolean read;
     private LocalDateTime createdAt;
-
 }

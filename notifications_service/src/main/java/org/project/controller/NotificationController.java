@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.project.dto.CreateNotificationDto;
 import org.project.dto.ListNotificationDto;
 import org.project.service.NotificationService;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +50,18 @@ public class NotificationController {
         return notificationService.findNotificationsByUserId(jwt, timeZone, page).map(ResponseEntity::ok);
     }
 
+    @Operation(
+            summary = "Получение кол-во уведомлений от 0 до 10",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "Список уведомлений",
+                    content = @Content(schema = @Schema(implementation = String.class))
+            )
+    )
+    @GetMapping("/count")
+    public Mono<ResponseEntity<Map<String, String>>> getCountNotificationByUserID(@AuthenticationPrincipal Jwt jwt){
+        return notificationService.countNotificationByUserId(jwt).map(count -> ResponseEntity.ok(Map.of("count", count)));
+    }
 
     @Operation(
             summary = "Прочитать уведомления"

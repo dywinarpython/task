@@ -8,6 +8,7 @@ import org.project.dto.response.group.ListUserDto;
 import org.project.entity.GroupUsers;
 import org.project.repository.GroupUsersRepository;
 import org.project.service.GroupUserService;
+import org.project.service.KafkaService;
 import org.project.service.UserRoleService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -17,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -38,6 +40,10 @@ public class GroupUserServiceImpl implements GroupUserService {
 
     private final CacheManager cacheManager;
 
+    private final KafkaService kafkaService;
+
+    private final TransactionalOperator transactionalOperator;
+
 
     @CacheEvict(value = "GROUPS_ID", key = "#jwt.getSubject()")
     @Override
@@ -56,7 +62,9 @@ public class GroupUserServiceImpl implements GroupUserService {
                         return Mono.error(new ValidationException("The user has already been added to the group"));
                     }
                     return saveUserInGroup(jwt, groupId, "MEMBER");
-                })).then();
+                }).then(kafkaService.sendMessageToNotifications(UUID.fromString(jwt.getSubject()), "Вы добавлены в новую группу."))
+                                .as(transactionalOperator::transactional)
+                );
     }
 
     @Override

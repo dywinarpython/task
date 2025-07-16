@@ -8,8 +8,10 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-
 public interface NotificationService {
+
+
+    Mono<String> countNotificationByUserId(Jwt jwt);
 
     Mono<ListNotificationDto> findNotificationsByUserId(Jwt jwt, String timeZone, Integer page);
 

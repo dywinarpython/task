@@ -66,6 +66,7 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<UUID, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(uuidConsumerFactory());
+        factory.setConcurrency(2);
         return factory;
     }
 
@@ -74,6 +75,7 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<Long, NotificationPayload> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(longConsumerFactory());
+        factory.setConcurrency(2);
         return factory;
     }
 }

@@ -37,8 +37,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
                 )
         )
 )
-@SpringBootApplication
 @EnableScheduling
+@SpringBootApplication
 public class NotificationsServiceApplication
 {
     public static void main( String[] args )
