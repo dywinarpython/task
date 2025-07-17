@@ -12,8 +12,7 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
 ---
 
 ## 🏛️ Architecture 
-
-
+![architecture_diagram_large](https://github.com/user-attachments/assets/d6da84c7-02ed-4271-9808-a07c6b78257c)
 ### Description:
 
 * **User Service**
@@ -106,7 +105,7 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
 ---
 
 ## 🏛️ Архитектура 
-
+![architecture_diagram_large_ru](https://github.com/user-attachments/assets/da9cc7a8-ed5d-4a52-a537-9efb74bcb932)
 
 ### Описание:
 
