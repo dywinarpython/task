@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+    <changeSet id="2025-08-07-004-add-group_users.xml" author="Dywinar">
+        <createTable tableName="roles">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <sql>
+            insert into roles (id, name) values
+            (default, 'ADMIN'),
+            (default, 'OWNER'),
+            (default, 'MEMBER');
+        </sql>
+        <createTable tableName="group_users">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="group_users" columnNames="user_id, group_id" constraintName="uk_group_id_user_id"/>
+        <addForeignKeyConstraint baseTableName="group_users" baseColumnNames="group_id" constraintName="fk_group_id_group_users" referencedTableName="group"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="group_users" baseColumnNames="role_id" constraintName="fk_role_id_group_users" referencedTableName="roles"
+                                 referencedColumnNames="id" onDelete="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

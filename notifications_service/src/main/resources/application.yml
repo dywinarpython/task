@@ -1,0 +1,45 @@
+
+spring:
+  application:
+    name: notifications-service
+  data:
+      mongodb:
+        uri: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_URL}/notifications?authSource=admin
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/task
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: notification-consumer-group
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+server:
+  port: 8002
+logging:
+  level:
+    org.mongodb.driver: DEBUG
+    org.springframework.data.mongodb.core: DEBUG
+    root: INFO
+    org.springframework.web.reactive.socket: DEBUG
+    org.springframework.security: DEBUG
+    reactor.netty: DEBUG
+    org.project: DEBUG
+
+
+
+springdoc:
+  swagger-ui:
+    display-request-duration: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, beans, prometheus
+pageable:
+  size: 10
