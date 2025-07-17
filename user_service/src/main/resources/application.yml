@@ -1,7 +1,7 @@
 
 spring:
   application:
-    name: task
+    name: notifications-service
   cache:
     type: redis
   data:
