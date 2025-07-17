@@ -22,4 +22,9 @@ public class UserServiceImpl implements UserService {
     public Mono<UserDto> findUserByUserID(UUID userId, Jwt jwt) {
         return userClient.checkCommonGroups(jwt, userId).then(searchUserClient.searchUser(userId));
     }
+
+    @Override
+    public Mono<UserDto> findUser(Jwt jwt) {
+        return searchUserClient.searchUser(UUID.fromString(jwt.getSubject()));
+    }
 }

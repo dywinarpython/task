@@ -1,7 +1,7 @@
 
 spring:
   application:
-    name: user-service
+    name: task
   cache:
     type: redis
   data:
@@ -26,6 +26,9 @@ spring:
           issuer-uri: http://localhost:8080/realms/task
 server:
   port: 8001
+logging:
+  file:
+    name: logs/app.log
 
 springdoc:
   swagger-ui:
