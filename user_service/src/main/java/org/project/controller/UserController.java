@@ -23,11 +23,19 @@ public class UserController {
     private final UserService userService;
 
     @Operation(
-            summary = "Получение информации о пользователе"
+            summary = "Запрос информации о пользователе"
     )
     @GetMapping("/{userId}")
     public Mono<ResponseEntity<UserDto>> getUserById(@PathVariable UUID userId, @AuthenticationPrincipal Jwt jwt){
         return userService.findUserByUserID(userId, jwt).map(ResponseEntity::ok);
+    }
+
+    @Operation(
+            summary = "Запрос информации о пользователе"
+    )
+    @GetMapping
+    public Mono<ResponseEntity<UserDto>> getUser(@AuthenticationPrincipal Jwt jwt){
+        return userService.findUser(jwt).map(ResponseEntity::ok);
     }
 
 }

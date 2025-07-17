@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface UserService {
     Mono<UserDto> findUserByUserID(UUID userId, Jwt jwt);
+    Mono<UserDto> findUser(Jwt jwt);
 }
