@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Table(name = "task")
 @Getter
@@ -24,7 +25,7 @@ public class Task {
 
     private LocalDateTime createTime;
 
-    private LocalDateTime deadLine;
+    private OffsetDateTime deadLine;
 
     private LocalDateTime updateTime;
 

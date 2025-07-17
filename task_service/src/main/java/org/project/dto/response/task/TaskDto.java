@@ -3,6 +3,7 @@ package org.project.dto.response.task;
 
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record TaskDto(
@@ -10,7 +11,7 @@ public record TaskDto(
         UUID assignBy,
         String name,
         String description,
-        LocalDateTime deadLine,
+        OffsetDateTime deadLine,
         LocalDateTime createTime,
         LocalDateTime updateTime,
         String status,

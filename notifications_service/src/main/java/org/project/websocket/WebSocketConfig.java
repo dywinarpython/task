@@ -23,7 +23,6 @@ public class WebSocketConfig {
     public HandlerMapping webSocketMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
         map.put("/app/notifications/", notificationsWebSocketHandler);
-
         return new SimpleUrlHandlerMapping(map, -1);
     }
 

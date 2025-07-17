@@ -51,13 +51,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Mono<List<TaskWithUserDto>> getTasks(String timeZone, Jwt jwt, Long groupId, Long page) {
         return groupUserService.verifyAdminAccess(groupId, jwt).then(
-                taskRepository.findByGroupId(groupId, size, page*size ).map(task -> mapperTask.taskWithUserDtoToTaskWithUserDto(task, timeZone)).collectList());
+                taskRepository.findByGroupId(groupId, size, page*size ).map(task -> mapperTask.taskToTaskWithUserDto(task, timeZone)).collectList());
     }
 
     @Override
     public Mono<List<TaskDto>> getTasksForUser(String timeZone, Jwt jwt, Long groupId, Long page) {
         return groupUserService.checkUserInGroup(groupId, UUID.fromString(jwt.getSubject()))
-                .then(groupTasksService.findTaskForUserWithGroupId(jwt, groupId, page).collectList());
+                .then(groupTasksService.findTaskForUserWithGroupId(jwt, groupId, page).collectList().map(task -> mapperTask.taskListDtoTTaskListDto(task, timeZone)));
     }
 
     @Override

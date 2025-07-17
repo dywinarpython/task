@@ -42,11 +42,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
 
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -121,7 +122,7 @@ class TaskApplicationTests {
         Optional<Group> optionalGroup = Optional.ofNullable(groupRepository.findByName("Компания").blockFirst());
         assertTrue(optionalGroup.isPresent());
         group = optionalGroup.get();
-        dto = new CreateTaskDto(group.getId() ,"Задача 1", "Описать структуру БД", 12400000L, "В планах работы");
+        dto = new CreateTaskDto(group.getId() ,"Задача 1", "Описать структуру БД", OffsetDateTime.now().plusDays(12), "В планах работы");
         task = taskRepository.save(mapperTask.taskDtoToTask(dto)).block();
         assertNotNull(task, "Ошибка сохранения задачи");
         GroupTasks groupTasks = new GroupTasks();
@@ -130,7 +131,7 @@ class TaskApplicationTests {
         groupTasks.setAssignBy(UUID.fromString(jwt.getSubject()));
         groupTasksRepository.save(groupTasks).block();
         when(kafkaService.sendMessageToAllUserInGroup(anyLong())).thenReturn(Mono.empty());
-        when(kafkaService.sendMessageToNotifications(UUID.randomUUID(), "message")).thenReturn(Mono.empty());
+        when(kafkaService.sendMessageToNotifications(any(UUID.class), anyString())).thenReturn(Mono.empty());
     }
 
     @Test
@@ -178,7 +179,7 @@ class TaskApplicationTests {
         taskRepository.save(mapperTask.taskDtoToTask(dto)).block();
         Task task = taskRepository.findByName(dto.name()).blockFirst();
         assertNotNull(task, "Ошибка сохранения задачи");
-        SetTaskDto setTaskDto = new SetTaskDto(task.getId(), "Задача 1 изменена", null, 10043599L, null);
+        SetTaskDto setTaskDto = new SetTaskDto(task.getId(), "Задача 1 изменена", null, OffsetDateTime.now().plusDays(12), null);
         webTestClient
                 .mutateWith(mockJwt().jwt(jwt))
                 .patch()

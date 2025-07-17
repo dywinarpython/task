@@ -10,6 +10,7 @@ import org.project.service.NotificationService;
 import org.project.websocket.NotificationsWebSocketHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -42,7 +43,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public Mono<ListNotificationDto> findNotificationsByUserId(Jwt jwt, String timeZone, Integer page) {
-        return notificationRepository.findByUserId(UUID.fromString(jwt.getSubject()), PageRequest.of(page, size))
+        return notificationRepository.findByUserId(UUID.fromString(jwt.getSubject()), PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt")))
                 .map(notificationDto -> notificationMapper.setCreateAtWithTimeZone(notificationDto, timeZone)).collectList()
                 .map(ListNotificationDto::new);
     }

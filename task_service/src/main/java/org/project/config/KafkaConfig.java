@@ -37,7 +37,7 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic messageUserFroGroup(){
-        return createTopic("notifications-user--group-task");
+        return createTopic("notifications-user-group-task");
     }
 
     @Bean

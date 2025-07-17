@@ -1,6 +1,6 @@
 spring:
   application:
-    name: task
+    name: task-service
   cache:
     type: redis
   data:

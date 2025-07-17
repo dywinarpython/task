@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+    <changeSet id="2025-17-07-007-set-column-in-table-task.xml" author="Dywinar">
+        <modifyDataType
+                tableName="task"
+                columnName="dead_line"
+                newDataType="TIMESTAMP WITH TIME ZONE"/>
+    </changeSet>
+</databaseChangeLog>

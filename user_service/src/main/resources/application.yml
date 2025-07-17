@@ -1,7 +1,7 @@
 
 spring:
   application:
-    name: task
+    name: user-service
   cache:
     type: redis
   data:

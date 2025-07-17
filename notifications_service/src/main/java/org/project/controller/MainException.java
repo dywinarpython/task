@@ -22,13 +22,14 @@ public class MainException {
     @ExceptionHandler(DecodingException.class)
     public Mono<ResponseEntity<Map<String, String>>> handleDecodingErrors(DecodingException ex) {
         String message = ex.getMessage();
-        log.warn(message);
+        log.warn(message, ex);
         return Mono.just(ResponseEntity.badRequest()
                 .body(Map.of("warn", "Incorrect data was sent to the server")));
     }
 
     @ExceptionHandler(WebExchangeBindException.class)
     public Mono<ResponseEntity<List<String>>> handleValidationException(WebExchangeBindException ex) {
+        log.warn(ex.getMessage(), ex);
         List<String> errors = ex.getBindingResult()
                 .getAllErrors()
                 .stream()
@@ -37,9 +38,14 @@ public class MainException {
         return Mono.just(ResponseEntity.badRequest().body(errors));
     }
     @ExceptionHandler(ValidationException.class)
-    public Mono<ResponseEntity<Map<String, String>>> handler(ValidationException e){
-        log.warn("Возникла ошибка валидации, а именно: {}", e.getMessage());
-        return Mono.just(ResponseEntity.badRequest().body(Map.of("warn", e.getMessage())));
+    public Mono<ResponseEntity<Map<String, String>>> handler(ValidationException ex){
+        log.warn("Возникла ошибка валидации, а именно: {}", ex.getMessage(), ex);
+        return Mono.just(ResponseEntity.badRequest().body(Map.of("warn", ex.getMessage())));
+    }
+    @ExceptionHandler(Exception.class)
+    public Mono<ResponseEntity<Map<String, String>>> handler(Exception ex){
+        log.error("Ошибка сервера: {}", ex.getMessage(), ex);
+        return Mono.just(ResponseEntity.internalServerError().body(Map.of("error", ex.getMessage())));
     }
 
 }
