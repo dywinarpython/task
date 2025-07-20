@@ -83,11 +83,11 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
 
 ## 🎯 Future Plans
 
-* Frontend client application.
-* Monitoring and logging via Victoria Metrics and Grafana.
-* Integrate Nginx as API Gateway.
-* Centralized configuration via Spring Cloud Config.
-* Resource monitoring dashboards (Prometheus, Grafana).
+* Frontend client application — 🔄 in progress  
+* Integrate Nginx as API Gateway — ⏳ planned  
+* Centralized configuration via Spring Cloud Config — ⏳ planned  
+* Resource monitoring dashboards (Prometheus, Grafana) — ✅ completed  
+
 
 ---
 
@@ -177,10 +177,9 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
 
 ## 🎯 Планы
 
-* Клиентское приложение.
-* Мониторинг и логирование с Victoria Metrics и Grafana.
-* Интеграция Nginx как API Gateway.
-* Централизованное управление конфигурациями (Spring Cloud Config).
-* Мониторинг ресурсов (Prometheus, Grafana).
+* Клиентское приложение — 🔄 в процессе  
+* Интеграция Nginx как API Gateway — ⏳ в планах  
+* Централизованное управление конфигурациями (Spring Cloud Config) — ⏳ в планах  
+* Мониторинг ресурсов (Prometheus, Grafana) — ✅ завершено  
 
 ---
