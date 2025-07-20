@@ -38,7 +38,7 @@ import java.util.UUID;
 @SpringBootTest
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
-@Import({TestSecurityConfig.class, MongoDbTestConfig.class})
+@Import({TestSecurityConfig.class})
 public class NotificationsServiceApplicationTest {
     @MockitoBean
     private ConsumerFactory<?, ?> uuidConsumerFactory;
