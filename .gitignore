@@ -33,7 +33,6 @@ build/
 .vscode/
 
 .env
-# Исключаем папки с логами
 log/
 logs/
 

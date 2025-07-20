@@ -71,10 +71,34 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+  prometheus:
+    image: prom/prometheus:main
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+        - './prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro'
+        - 'prometheus_data:/prometheus'
+    networks:
+      - monitoring
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
 volumes:
   db:
   dbSecurity:
   mongo_data:
   kafka_data:
+  prometheus_data:
 networks:
   keycloak_net:
+  monitoring:

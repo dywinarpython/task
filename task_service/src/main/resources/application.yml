@@ -58,7 +58,14 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, beans, prometheus
+        include: health,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
 kafka:
   partitions: 2
 pageable:

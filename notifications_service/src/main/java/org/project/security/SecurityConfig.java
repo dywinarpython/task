@@ -22,7 +22,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
                                 "/app/notifications/**",
-                                "/webjars/**").permitAll()
+                                "/webjars/**",
+                                "/actuator/**").permitAll()
                         .anyExchange().hasRole("user")
                 )
                 .oauth2ResourceServer(oauth -> oauth
