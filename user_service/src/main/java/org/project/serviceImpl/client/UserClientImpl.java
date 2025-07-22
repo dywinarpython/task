@@ -2,6 +2,7 @@ package org.project.serviceImpl.client;
 
 import org.project.service.client.UserClient;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,8 +15,8 @@ public class UserClientImpl implements UserClient {
 
     private final WebClient webClient;
 
-    public UserClientImpl(@Qualifier("defaultWebClientBuilder") WebClient.Builder webClient) {
-        this.webClient = webClient.baseUrl("http://localhost:9090").build();
+    public UserClientImpl(@Qualifier("defaultWebClientBuilder") WebClient.Builder webClient, @Value("${client.user-service-url}") String uri) {
+        this.webClient = webClient.baseUrl(uri).build();
     }
 
     @Override

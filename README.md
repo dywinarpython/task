@@ -63,8 +63,7 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
 
     * Docker & Docker Compose
     * Create Keycloak realm, clients, and roles as defined in `docker-compose.yml`
-    * **Important:** create the real `task-service` client in Keycloak and configure roles and mappers for future microservice management (e.g., via Grafana).
-
+* **Important:** create the real `task-service` client in Keycloak and configure roles and mappers for future microservice management
 4. **Start the services**
 
    ```bash
@@ -157,8 +156,7 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
 
     * Docker и Docker Compose
     * Создать реал, клиенты и роли Keycloak согласно `docker-compose.yml`
-    * **Важно:** создать реального клиента `task-service` в Keycloak, настроить роли и мапперы для дальнейшего управления микросервисами (например, через Grafana).
-
+*   **Важно:** обязательно нужно настроить Keycloak, добавить realm `task` и создать два клиента: `admin-cli` и `task-service`, при этом `admin-cli` должен быть настроен для client-credentials.
 4. **Запуск сервисов**
 
    ```bash
