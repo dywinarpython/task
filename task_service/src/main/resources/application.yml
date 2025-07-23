@@ -5,8 +5,8 @@ spring:
     type: redis
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
       repositories:
         enabled: false
   liquibase:
@@ -34,26 +34,19 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/task
+          issuer-uri: ${KEYCLOAK_URI:http://localhost:8080/realms/task}
   kafka:
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
       properties:
         enable.idempotence: true
         request.timeout.ms: 15000
         delivery.timeout.ms: 20000
 
 server:
-  port: 8000
-logging:
-  level:
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
-    io.r2dbc.postgresql.DELETE: DEBUG
-
+  port: ${SERVER_PORT:8000}
 springdoc:
-  swagger-ui:
-    display-request-duration: true
+  display-request-duration: true
 management:
   endpoints:
     web:
@@ -67,6 +60,16 @@ management:
       percentiles-histogram:
         "[http.server.requests]": true
 kafka:
-  partitions: 2
+  partitions: ${KAFKA_PARTITIONS:2}
 pageable:
-  size: 10
+  size: ${PAGE_SIZE:10}
+
+logging:
+  level:
+    org.springframework: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.data.redis: DEBUG
+    org.springframework.web.client: DEBUG
+    com.mongodb: DEBUG

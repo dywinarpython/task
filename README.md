@@ -63,14 +63,21 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
 
     * Docker & Docker Compose
     * Create Keycloak realm, clients, and roles as defined in `docker-compose.yml`
-    * **Important:** create the real `task-service` client in Keycloak and configure roles and mappers for future microservice management (e.g., via Grafana).
-
+* **Important:** create the real `task-service` client in Keycloak and configure roles and mappers for future microservice management
 4. **Start the services**
 
    ```bash
    docker compose up -d
    ```
+After startup, all microservices and supporting components will be launched automatically, including Keycloak.
 
+Important: Keycloak is available at `http://keycloak:8080`.
+This hostname is used for communication between microservices. To make Keycloak accessible from your host machine, you need to add the following entry to your `/etc/hosts` file:
+
+```plaintext
+127.0.0.1  keycloak
+```
+*Without this entry, redirects and token validation may not work properly, especially when using OAuth2 and OpenID.*
 5. **Access**
 
     * Keycloak Admin UI: `http://localhost:8080`
@@ -78,13 +85,12 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
     * Task Service API: `http://localhost:8001/api/tasks`
     * Notifications API: `http://localhost:8001/api/notifications`
     * Notifications WebSocket: `ws://localhost:8002/ws/notifications` (token must be passed via `Authorization: Bearer <token>` header)
-
 ---
 
 ## 🎯 Future Plans
 
 * Frontend client application — 🔄 in progress  
-* Integrate Nginx as API Gateway — ⏳ planned  
+* Integrate Nginx as API Gateway — 🔄 in progress
 * Centralized configuration via Spring Cloud Config — ⏳ planned  
 * Resource monitoring dashboards (Prometheus, Grafana) — ✅ completed  
 
@@ -157,14 +163,21 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
 
     * Docker и Docker Compose
     * Создать реал, клиенты и роли Keycloak согласно `docker-compose.yml`
-    * **Важно:** создать реального клиента `task-service` в Keycloak, настроить роли и мапперы для дальнейшего управления микросервисами (например, через Grafana).
-
+*   **Важно:** обязательно нужно настроить Keycloak, добавить realm `task` и создать два клиента: `admin-cli` и `task-service`, при этом `admin-cli` должен быть настроен для client-credentials.
 4. **Запуск сервисов**
 
    ```bash
    docker compose up -d
    ```
+После запуска все микросервисы и вспомогательные компоненты будут подняты автоматически, в том числе Keycloak.
 
+**Важно**: Keycloak доступен по адресу `http://keycloak:8080`.
+Это имя используется для связи между микросервисами. Чтобы Keycloak был доступен и с хоста (вашего компьютера), необходимо добавить запись в файл `/etc/hosts`:
+
+```plaintext
+127.0.0.1  keycloak
+```
+*Без этой записи могут не работать перенаправления и валидация токенов, особенно при использовании OAuth2 и OpenID.*
 5. **Доступ**
 
     * Админка Keycloak: `http://localhost:8080`
@@ -178,8 +191,7 @@ All services are built with **Spring WebFlux**, secured using **Keycloak** (OAut
 ## 🎯 Планы
 
 * Клиентское приложение — 🔄 в процессе  
-* Интеграция Nginx как API Gateway — ⏳ в планах  
+* Интеграция Nginx как API Gateway — 🔄 в процессе
 * Централизованное управление конфигурациями (Spring Cloud Config) — ⏳ в планах  
-* Мониторинг ресурсов (Prometheus, Grafana) — ✅ завершено  
-
+* Мониторинг ресурсов (Prometheus, Grafana) — ✅ завершено
 ---

@@ -1,13 +1,13 @@
 
 spring:
   application:
-    name: notifications-service
+    name: user-service
   cache:
     type: redis
   data:
       redis:
-        host: localhost
-        port: 6379
+        host: ${REDIS_HOST:localhost}
+        port: ${REDIS_PORT:6379}
         repositories:
           enabled: false
   security:
@@ -15,24 +15,21 @@ spring:
       client:
         registration:
           keycloak:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
+            client-id: ${CLIENT_ID_CREDENTIALS}
+            client-secret: ${CLIENT_SECRET_CREDENTIALS}
             authorization-grant-type: client_credentials
         provider:
           keycloak:
-            issuer-uri: http://localhost:8080/realms/task
+            issuer-uri: ${KEYCLOAK_URI:http://localhost:8080/realms/task}
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/task
+          issuer-uri: ${KEYCLOAK_URI:http://localhost:8080/realms/task}
 server:
-  port: 8001
-logging:
-  file:
-    name: logs/app.log
+  port: ${SERVER_PORT:8001}
+
 
 springdoc:
-  swagger-ui:
-    display-request-duration: true
+  display-request-duration: true
 management:
   endpoints:
     web:
@@ -45,3 +42,16 @@ management:
     distribution:
       percentiles-histogram:
         "[http.server.requests]": true
+client:
+  user-service-url: ${USER_SERVICE_URL:http://localhost:8000}
+  keycloak-uri: ${KEYCLOAK_URI:http://localhost:8080/realms/task}
+
+logging:
+  level:
+    org.springframework: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.data.redis: DEBUG
+    org.springframework.web.client: DEBUG
+    com.mongodb: DEBUG

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.project.dto.UserDto;
 import org.project.service.client.SearchUserClient;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Service;
@@ -20,15 +21,17 @@ public class SearchUserClientImpl implements SearchUserClient {
 
     private final WebClient webClient;
 
-    public SearchUserClientImpl(@Qualifier("oauth2WebClient") WebClient.Builder webClient, AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager authorizedClientServiceReactiveOAuth2AuthorizedClientManager) {
-        this.webClient = webClient.baseUrl("http://localhost:8080").build();
+    public SearchUserClientImpl(@Qualifier("oauth2WebClient") WebClient.Builder webClient,
+                                AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager authorizedClientServiceReactiveOAuth2AuthorizedClientManager,
+                                @Value("${client.keycloak-uri}") String uri) {
+        this.webClient = webClient.baseUrl(uri.replace("/realms/", "/admin/realms/")).build();
     }
 
     @Cacheable(value = "USER_INFO", key = "#userId")
     @Override
     public Mono<UserDto> searchUser(UUID userId) {
         return webClient.get()
-                            .uri("/admin/realms/task/users/" + userId)
+                            .uri("/users/" + userId)
                             .exchangeToMono(clientResponse -> {
                                 if(clientResponse.statusCode().is2xxSuccessful()){
                                     return clientResponse.bodyToMono(UserDto.class);
