@@ -6,8 +6,6 @@ services:
       POSTGRES_DB: taskDb
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - db:/var/lib/postgresql/data
     healthcheck:
@@ -69,8 +67,6 @@ services:
   redis:
     image: redis:latest
     container_name: redis
-    ports:
-      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -107,8 +103,6 @@ services:
   mongo:
     image: mongo:latest
     container_name: mongo
-    ports:
-      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     environment:
@@ -130,8 +124,6 @@ services:
     volumes:
       - './prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro'
       - 'prometheus_data:/prometheus'
-    ports:
-      - "9090:9090"
     networks:
       - monitoring
     healthcheck:
