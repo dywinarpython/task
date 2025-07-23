@@ -77,7 +77,8 @@ This hostname is used for communication between microservices. To make Keycloak 
 ```plaintext
 127.0.0.1  keycloak
 ```
-*Without this entry, redirects and token validation may not work properly, especially when using OAuth2 and OpenID.*
+_Without this entry, redirects and token validation may not work properly, especially when using OAuth2 and OpenID._
+
 5. **Access**
 
     * Keycloak Admin UI: `http://localhost:8080`
@@ -177,9 +178,11 @@ This hostname is used for communication between microservices. To make Keycloak 
 ```plaintext
 127.0.0.1  keycloak
 ```
-*Без этой записи могут не работать перенаправления и валидация токенов, особенно при использовании OAuth2 и OpenID.*
-5. **Доступ**
 
+_Без этой записи могут не работать перенаправления и валидация токенов, особенно при использовании OAuth2 и OpenID._
+
+5. **Доступ**
+   
     * Админка Keycloak: `http://localhost:8080`
     * API User Service: `http://localhost:8000/api/users`
     * API Task Service: `http://localhost:8001/api/tasks`
